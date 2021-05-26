@@ -1,34 +1,37 @@
 {
-    "manifest_version": 2,
+  "manifest_version": 2,
 
-    "name": "Blend Toolkit",
-    "description":
-        "Blend Tools",
-    "version": "1.0.0",
+  "name": "Blend Toolkit",
+  "description": "Blend Tools",
+  "version": "1.0.0",
 
-    "browser_action": {
-        "default_icon": "icon16.png",
-        "default_popup": "popup.html"
-    },
+  "browser_action": {
+    "default_icon": "icon16.png",
+    "default_popup": "popup.html"
+  },
 
-    "content_scripts": [
-      {
-        "matches": ["http://localhost/*", "https://*.blendlabs.com/*"],
-        "css": [],
-        "js": ["js/contentScript.js", "js/sidebar.js"]
-      }
-    ],
-
-    "permissions": ["tabs"],
-
-    "background": {
-        "scripts": ["js/eventPage.js"],
-        "persistent": false
-    },
-
-    "icons": {
-        "16": "icon16.png",
-        "48": "icon48.png",
-        "128": "icon128.png"
+  "content_scripts": [
+    {
+      "matches": [
+        "http://localhost/*",
+        "https://*.beta.blendlabs.com/*",
+        "https://*.sandbox.centrio.com/*"
+      ],
+      "css": [],
+      "js": ["js/contentScript.js", "js/sidebar.js"]
     }
+  ],
+
+  "permissions": ["tabs"],
+
+  "background": {
+    "scripts": ["js/eventPage.js"],
+    "persistent": false
+  },
+
+  "icons": {
+    "16": "icon16.png",
+    "48": "icon48.png",
+    "128": "icon128.png"
+  }
 }
