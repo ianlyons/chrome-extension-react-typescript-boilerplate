@@ -1,3 +1,5 @@
+import * as utils from "../utils/utils";
+
 function getRandomEmail(baseUsername: string) {
   const randomExtension = Math.random().toString(36).substring(7);
   return `${baseUsername}+${randomExtension}@blend.com`;
@@ -5,6 +7,16 @@ function getRandomEmail(baseUsername: string) {
 
 interface GetPrefillValuesOpts {
   baseUsername: string;
+}
+
+export function getButtonPrefillValues() {
+  const res = {};
+  utils.mapObject(getPrefillValues({ baseUsername: "ian" }), (value, key) => {
+    if (value.type == "button") {
+      res[key] = value;
+    }
+  });
+  return res;
 }
 
 export function getPrefillValues(opts: GetPrefillValuesOpts) {
@@ -23,6 +35,7 @@ export function getPrefillValues(opts: GetPrefillValuesOpts) {
     Accept_Terms_of_Service_and_EConsent: { type: "checkbox", value: true },
     Email_input: { value: email },
     Email_match_confirmation: { value: email },
+    accountCreationPassword: { value: "Password123!" },
 
     "Application.loanPurpose": { type: "button", value: "PURCHASE" },
 
@@ -86,6 +99,14 @@ export function getPrefillValues(opts: GetPrefillValuesOpts) {
     "CurrentBorrower.currentAddressResidencyType": {
       value: "LIVING_RENT_FREE",
     },
+    "CurrentBorrower.declarations.ownershipInterestType": {
+      type: "radio",
+      value: "PRIMARY_RESIDENCE",
+    },
     "CurrentBorrower.dependentCount": { value: "0" },
+    Opt_into_Brokerage: {
+      type: "button",
+      value: "Not_interested",
+    },
   };
 }

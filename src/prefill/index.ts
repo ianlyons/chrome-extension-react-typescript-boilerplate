@@ -28,6 +28,7 @@ export async function fillTask() {
     if (fillValueDefinition.type === "checkbox") {
       input.click();
       continue;
+    } else if (fillValueDefinition.type === "radio") {
     } else if (fillValueDefinition.type === "address") {
       // // fill and open the modal
       // // input.click();
@@ -104,11 +105,19 @@ export function advancePage() {
     '[data-it="it-InterstitialView-primaryButton"]'
   ) as HTMLButtonElement;
   if (submitEnumWrapper) {
-    // default to the first choice
+    const submitValues = data.getButtonPrefillValues();
     const submitButtons = Array.from(
       submitEnumWrapper.querySelectorAll('button[type="submit"]')
     ) as HTMLButtonElement[];
-    submitButtons[0].click();
+    const submitButtonProperty = submitButtons[0].id.split("-")[0];
+    const submitButtonChoice = submitValues[submitButtonProperty];
+    if (submitButtonChoice) {
+      const submitButtonId = `${submitButtonProperty}-${submitButtonChoice.value}`;
+      document.getElementById(submitButtonId).click();
+    } else {
+      // otherwise, default to the first button /shrug
+      submitButtons[0].click();
+    }
   } else if (interstitialStartButton) {
     interstitialStartButton.click();
   }
