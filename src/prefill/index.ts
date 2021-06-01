@@ -14,14 +14,16 @@ export async function fillTask() {
   );
 
   for (let i = 0; i < nonButtonInputs.length; i++) {
-    const input = nonButtonInputs[i] as HTMLElement;
-    const propertyName = prefillUtils.decodePropertyName(input.id);
+    const input = nonButtonInputs[i] as any;
+    const propertyName = prefillUtils.decodePropertyName(
+      input?.name || input.id
+    );
     const fillValueDefinition = prefillValues[propertyName];
     if (!fillValueDefinition) {
       console.info(`No prefillable value found for ${propertyName}`);
       continue;
     }
-    // if (fillValueDefinition.type !== "address") continue;
+
     const valueToFill = fillValueDefinition.value;
     console.info(`Filling ${valueToFill} into ${propertyName}`);
 
@@ -29,6 +31,23 @@ export async function fillTask() {
       input.click();
       continue;
     } else if (fillValueDefinition.type === "radio") {
+      const radioInput = input as HTMLInputElement;
+      // TODO this will currently run multiple times per input because radios are structured as
+      // n different `input type="radio"` elements with corresponding `name` attributes underneath
+      // a shared `fieldset`. it's okay for now, because it will keep selecting the same value.
+      const radioInputs = Array.from(
+        document.querySelectorAll(`input[name="${radioInput.name}"]`)
+      ) as HTMLInputElement[];
+      prefillUtils.selectClickInput("radio", radioInputs);
+    } else if (fillValueDefinition.type === "multicheckbox") {
+      const multicheckboxInput = input as HTMLInputElement;
+      // TODO this will currently run multiple times per input because radios are structured as
+      // n different `input type="radio"` elements with corresponding `name` attributes underneath
+      // a shared `fieldset`. it's okay for now, because it will keep selecting the same value.
+      const multicheckboxInputs = Array.from(
+        document.querySelectorAll(`input[name="${multicheckboxInput.name}"]`)
+      ) as HTMLInputElement[];
+      prefillUtils.selectClickInput("multicheckbox", multicheckboxInputs);
     } else if (fillValueDefinition.type === "address") {
       // // fill and open the modal
       // // input.click();
@@ -92,7 +111,7 @@ export async function fillTask() {
   }
 }
 
-export function advancePage() {
+function advancePage() {
   const defaultContinueButton = document.querySelector("#Continue");
   // some tasks have a default continue button unassociated with values; if that's the
   // case, just click it
@@ -104,21 +123,20 @@ export function advancePage() {
   const interstitialStartButton = document.querySelector(
     '[data-it="it-InterstitialView-primaryButton"]'
   ) as HTMLButtonElement;
+
+  // We know that there will be only one set of submit enums per page.
   if (submitEnumWrapper) {
-    const submitValues = data.getButtonPrefillValues();
     const submitButtons = Array.from(
       submitEnumWrapper.querySelectorAll('button[type="submit"]')
-    ) as HTMLButtonElement[];
-    const submitButtonProperty = submitButtons[0].id.split("-")[0];
-    const submitButtonChoice = submitValues[submitButtonProperty];
-    if (submitButtonChoice) {
-      const submitButtonId = `${submitButtonProperty}-${submitButtonChoice.value}`;
-      document.getElementById(submitButtonId).click();
-    } else {
-      // otherwise, default to the first button /shrug
-      submitButtons[0].click();
-    }
+    ) as HTMLElement[];
+    prefillUtils.selectClickInput("button", submitButtons as any[]);
   } else if (interstitialStartButton) {
     interstitialStartButton.click();
   }
+}
+
+export async function fillTaskAndAdvancePage() {
+  await fillTask();
+  await prefillUtils.pause(150);
+  advancePage();
 }

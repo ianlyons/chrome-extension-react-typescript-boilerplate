@@ -1,19 +1,15 @@
 import React, { useEffect, useState } from "react";
 import * as utils from "../utils/utils";
 import * as prefill from "../prefill";
+// import * as prefillUtils from "../prefill/prefillUtils";
 import "./Sidebar.scss";
 
 async function advancePage() {
-  await prefill.fillTask();
-  prefill.advancePage();
+  prefill.fillTaskAndAdvancePage();
 }
 
 export default function Sidebar() {
   const [isOpen, setIsOpen] = useState(false);
-  useEffect(() => {
-    // Example of how to send a message to eventPage.ts.
-    chrome.runtime.sendMessage({ sidebarMounted: true });
-  }, []);
 
   // heuristic for being on a task-related page in the borrower app
   const isValidScenario = location.href.indexOf("/section/") > -1;

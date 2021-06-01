@@ -1,3 +1,5 @@
+import * as data from "./data";
+
 export function createEventWithValueAndTarget(
   type: string,
   value: any,
@@ -9,6 +11,30 @@ export function createEventWithValueAndTarget(
   (event.target as any).value = value;
   (event.currentTarget as any).value = value;
   return event;
+}
+
+export function selectClickInput(
+  inputType: InputType,
+  inputs: HTMLButtonElement[] | HTMLInputElement[]
+) {
+  const possibleChoices = data.getPrefillValuesForInputType(inputType);
+
+  // with multiple inputs, there's not a particularly clear way to get the baseline property,
+  // which we need to perform the lookup on the possibleChoiceValues to understand which
+  // choice we want. so we just grab the id, which looks like:
+  // "CurrentBorrower.declarations.ownershipInterestType-PRIMARY_RESIDENCE"
+  // and hackily  separate the property name from the value.
+  const normalizedPropertyName = decodePropertyName(inputs[0].id.split("-")[0]);
+  const choice = possibleChoices[normalizedPropertyName];
+  if (choice) {
+    const choiceId = `${encodePropertyName(normalizedPropertyName)}-${
+      choice.value
+    }`;
+    document.getElementById(choiceId).click();
+  } else {
+    // otherwise, default to selecting the first one /shrug
+    inputs[0].click();
+  }
 }
 
 export function decodePropertyName(encodedPropertyName: string) {

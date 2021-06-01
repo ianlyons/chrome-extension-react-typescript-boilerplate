@@ -9,17 +9,26 @@ interface GetPrefillValuesOpts {
   baseUsername: string;
 }
 
-export function getButtonPrefillValues() {
-  const res = {};
+interface PrefillDefinition {
+  value: any;
+  type?: InputType;
+}
+
+type PrefillValues = Record<string, PrefillDefinition>;
+
+export function getPrefillValuesForInputType(
+  inputType: InputType
+): Partial<PrefillValues> {
+  const res: Record<string, any> = {};
   utils.mapObject(getPrefillValues({ baseUsername: "ian" }), (value, key) => {
-    if (value.type == "button") {
+    if (value.type == inputType) {
       res[key] = value;
     }
   });
   return res;
 }
 
-export function getPrefillValues(opts: GetPrefillValuesOpts) {
+export function getPrefillValues(opts: GetPrefillValuesOpts): PrefillValues {
   // TODO store this in state in case we need to reference it again
   const email = getRandomEmail(opts.baseUsername);
 
@@ -33,13 +42,22 @@ export function getPrefillValues(opts: GetPrefillValuesOpts) {
     "Borrower.maritalStatus": { value: "MARRIED" },
     "Borrower.currentAddress": { type: "address", value: "456 Washington St" },
     Accept_Terms_of_Service_and_EConsent: { type: "checkbox", value: true },
-    Email_input: { value: email },
-    Email_match_confirmation: { value: email },
+    "Email input": { value: email },
+    "Email match confirmation": { value: email },
     accountCreationPassword: { value: "Password123!" },
+    "Does_the_coborrower_exists?": {
+      type: "button",
+      value: "No",
+    },
 
     "Application.loanPurpose": { type: "button", value: "PURCHASE" },
 
     "CurrentBorrower.consentToLenderContactGiven": {
+      type: "checkbox",
+      value: true,
+    },
+
+    "Accept Terms of Service and EConsent": {
       type: "checkbox",
       value: true,
     },
@@ -79,19 +97,19 @@ export function getPrefillValues(opts: GetPrefillValuesOpts) {
     "CurrentREO.mortgageCount": { value: 0 },
 
     // Demographics
-    "CurrentBorrower.HMDASexType-NOT_PROVIDED": {
-      type: "checkbox",
-      value: true,
+    "CurrentBorrower.HMDASexType": {
+      type: "multicheckbox",
+      value: "NOT_PROVIDED",
     },
     // Demographics
-    "CurrentBorrower.HMDAEthnicityType-NOT_PROVIDED": {
-      type: "checkbox",
-      value: true,
+    "CurrentBorrower.HMDAEthnicityType": {
+      type: "multicheckbox",
+      value: "NOT_PROVIDED",
     },
     // Demographics
-    "CurrentBorrower.HMDARaceType-NOT_PROVIDED": {
-      type: "checkbox",
-      value: true,
+    "CurrentBorrower.HMDARaceType": {
+      type: "multicheckbox",
+      value: "NOT_PROVIDED",
     },
 
     // Additional Questions
@@ -103,7 +121,11 @@ export function getPrefillValues(opts: GetPrefillValuesOpts) {
       type: "radio",
       value: "PRIMARY_RESIDENCE",
     },
-    "CurrentBorrower.dependentCount": { value: "0" },
+    "CurrentBorrower.declarations.titleHeldType": {
+      type: "radio",
+      value: "SELF",
+    },
+    "CurrentBorrower.dependentCount": { value: 0 },
     Opt_into_Brokerage: {
       type: "button",
       value: "Not_interested",

@@ -5,10 +5,12 @@
   bottom: 0;
   overflow: hidden;
   width: 340px;
+  pointer-events: none;
 }
 
 .Sidebar {
   position: absolute;
+  pointer-events: all;
   border-left: solid grey 1px;
   top: 0;
   bottom: 0;

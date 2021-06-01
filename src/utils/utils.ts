@@ -1,12 +1,16 @@
-export function compact(list) {
+export function compact(list: any[]) {
   return Array.from(list).filter((arg) => !!arg);
 }
 
-export function classnames(...classnames) {
+export function classnames(...classnames: string[]) {
   return compact(classnames).join(" ");
 }
 
-export function mapObject(object, predicate) {
+type MapPredicate = (value: any, key: string) => any;
+export function mapObject(
+  object: Record<string, any>,
+  predicate: MapPredicate
+) {
   const res = [];
   for (const key in object) {
     res.push(predicate(object[key], key));
