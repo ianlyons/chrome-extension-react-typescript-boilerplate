@@ -92,31 +92,24 @@ export async function fillTask() {
 
       continue;
       // await prefillUtils.pause();
-    } else {
+    } else if (fillValueDefinition.type === "textlike") {
       // some inputs trigger changes off of blur as well, so we fire a change then a blur with the
       // same values in succession
-      const changeEvent = prefillUtils.createEventWithValueAndTarget(
-        "change",
-        valueToFill,
-        input
-      );
-      const blurEvent = prefillUtils.createEventWithValueAndTarget(
-        "blur",
-        valueToFill,
-        input
-      );
-      input.dispatchEvent(changeEvent);
-      input.dispatchEvent(blurEvent);
+      prefillUtils.fillTextlikeInput(input, valueToFill);
+    } else {
+      throw new Error(`Unhandled input type: ${fillValueDefinition.type}`);
     }
   }
 }
 
 function advancePage() {
-  const defaultContinueButton = document.querySelector("#Continue");
+  const defaultContinueButton = document.querySelector(
+    "#Continue"
+  ) as HTMLButtonElement;
   // some tasks have a default continue button unassociated with values; if that's the
   // case, just click it
   if (defaultContinueButton) {
-    return (defaultContinueButton as any).click();
+    return defaultContinueButton.click();
   }
 
   const submitEnumWrapper = document.querySelector('[data-it="SubmitEnum"]');

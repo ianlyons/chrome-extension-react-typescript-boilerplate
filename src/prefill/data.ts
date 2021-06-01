@@ -28,11 +28,21 @@ export function getPrefillValuesForInputType(
   return res;
 }
 
+function defaultPrefillValues(prefillValues: PrefillValues) {
+  const res: Record<string, any> = {};
+  utils.mapObject(getPrefillValues({ baseUsername: "ian" }), (value, key) => {
+    res[key] = Object.assign({}, value, {
+      type: value.type || "textlike",
+    });
+  });
+  return res;
+}
+
 export function getPrefillValues(opts: GetPrefillValuesOpts): PrefillValues {
   // TODO store this in state in case we need to reference it again
   const email = getRandomEmail(opts.baseUsername);
 
-  return {
+  return defaultPrefillValues({
     // Getting Started
     "Borrower.firstName": { value: "Ian" },
     "Borrower.lastName": { value: "Lyons" },
@@ -130,5 +140,5 @@ export function getPrefillValues(opts: GetPrefillValuesOpts): PrefillValues {
       type: "button",
       value: "Not_interested",
     },
-  };
+  });
 }

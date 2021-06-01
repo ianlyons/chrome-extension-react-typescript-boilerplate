@@ -49,6 +49,20 @@ export function encodePropertyName(text: string) {
     .replace(/\[([0-9]?[0-9])\]/g, "\u228f$1\u2290");
 }
 
+export function fillTextlikeInput(
+  input: HTMLInputElement,
+  valueToFill: string | number
+) {
+  const changeEvent = createEventWithValueAndTarget(
+    "change",
+    valueToFill,
+    input
+  );
+  const blurEvent = createEventWithValueAndTarget("blur", valueToFill, input);
+  input.dispatchEvent(changeEvent);
+  input.dispatchEvent(blurEvent);
+}
+
 export async function pause(durationMs = 1000) {
   return new Promise((resolve) => {
     setTimeout(resolve, durationMs);
