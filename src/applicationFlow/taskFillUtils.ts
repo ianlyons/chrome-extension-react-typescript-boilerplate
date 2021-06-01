@@ -13,11 +13,11 @@ export function createEventWithValueAndTarget(
   return event;
 }
 
-export function selectClickInput(
+export async function selectClickInput(
   inputType: InputType,
   inputs: HTMLButtonElement[] | HTMLInputElement[]
 ) {
-  const possibleChoices = data.getPrefillValuesForInputType(inputType);
+  const possibleChoices = await data.getFillValuesForInputType(inputType);
 
   // with multiple inputs, there's not a particularly clear way to get the baseline property,
   // which we need to perform the lookup on the possibleChoiceValues to understand which
@@ -53,12 +53,14 @@ export function fillTextlikeInput(
   input: HTMLInputElement,
   valueToFill: string | number
 ) {
+  const focusEvent = createEventWithValueAndTarget("focus", valueToFill, input);
   const changeEvent = createEventWithValueAndTarget(
     "change",
     valueToFill,
     input
   );
   const blurEvent = createEventWithValueAndTarget("blur", valueToFill, input);
+  input.dispatchEvent(focusEvent);
   input.dispatchEvent(changeEvent);
   input.dispatchEvent(blurEvent);
 }

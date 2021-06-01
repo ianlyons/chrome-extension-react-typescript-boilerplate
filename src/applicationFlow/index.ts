@@ -1,8 +1,8 @@
-import * as prefillUtils from "./prefillUtils";
+import * as prefillUtils from "./taskFillUtils";
 import * as data from "./data";
 
 export async function fillTask() {
-  const prefillValues = data.getPrefillValues({ baseUsername: "ian" });
+  const prefillValues = await data.getFillValues();
   const taskForm = document.querySelector("#taskForm");
   if (!taskForm) {
     console.info("Not on task page, skipping task fill");

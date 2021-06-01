@@ -17,3 +17,17 @@ export function mapObject(
   }
   return res;
 }
+
+export async function getStoredValue(key: string): Promise<any> {
+  return new Promise((resolve, reject) => {
+    // Asynchronously fetch all data from storage.sync.
+    chrome.storage.sync.get(key, (value) => {
+      // Pass any observed errors down the promise chain.
+      if (chrome.runtime.lastError) {
+        return reject(chrome.runtime.lastError);
+      }
+      // Pass the data retrieved from storage down the promise chain.
+      resolve(value);
+    });
+  });
+}

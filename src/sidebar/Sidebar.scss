@@ -34,3 +34,12 @@
   border-right: 0;
   border-radius: 3px 0 0 3px;
 }
+
+.Sidebar-inputWrapper:not(:last-child) {
+  margin-bottom: 12px;
+}
+
+// Create some separation between checkboxes and their labels
+.Sidebar label + input[type="checkbox"] {
+  margin-left: 8px;
+}

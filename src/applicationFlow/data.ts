@@ -1,26 +1,23 @@
 import * as utils from "../utils/utils";
 
-function getRandomEmail(baseUsername: string) {
+async function getRandomEmail() {
   const randomExtension = Math.random().toString(36).substring(7);
-  return `${baseUsername}+${randomExtension}@blend.com`;
+  const username = utils.getStoredValue("username");
+  return `${username}+${randomExtension}@blend.com`;
 }
 
-interface GetPrefillValuesOpts {
-  baseUsername: string;
-}
-
-interface PrefillDefinition {
+interface FillDefinition {
   value: any;
   type?: InputType;
 }
 
-type PrefillValues = Record<string, PrefillDefinition>;
+type FillValues = Record<string, FillDefinition>;
 
-export function getPrefillValuesForInputType(
+export async function getFillValuesForInputType(
   inputType: InputType
-): Partial<PrefillValues> {
+): Promise<FillValues> {
   const res: Record<string, any> = {};
-  utils.mapObject(getPrefillValues({ baseUsername: "ian" }), (value, key) => {
+  utils.mapObject(getFillValues(), (value, key) => {
     if (value.type == inputType) {
       res[key] = value;
     }
@@ -28,9 +25,11 @@ export function getPrefillValuesForInputType(
   return res;
 }
 
-function defaultPrefillValues(prefillValues: PrefillValues) {
+async function defaultFillValues(
+  prefillValues: FillValues
+): Promise<FillValues> {
   const res: Record<string, any> = {};
-  utils.mapObject(getPrefillValues({ baseUsername: "ian" }), (value, key) => {
+  utils.mapObject(prefillValues, (value, key) => {
     res[key] = Object.assign({}, value, {
       type: value.type || "textlike",
     });
@@ -38,11 +37,11 @@ function defaultPrefillValues(prefillValues: PrefillValues) {
   return res;
 }
 
-export function getPrefillValues(opts: GetPrefillValuesOpts): PrefillValues {
+export async function getFillValues(): Promise<FillValues> {
   // TODO store this in state in case we need to reference it again
-  const email = getRandomEmail(opts.baseUsername);
+  const email = getRandomEmail();
 
-  return defaultPrefillValues({
+  return defaultFillValues({
     // Getting Started
     "Borrower.firstName": { value: "Ian" },
     "Borrower.lastName": { value: "Lyons" },
@@ -135,7 +134,8 @@ export function getPrefillValues(opts: GetPrefillValuesOpts): PrefillValues {
       type: "radio",
       value: "SELF",
     },
-    "CurrentBorrower.dependentCount": { value: 0 },
+    "CurrentBorrower.dependentCount": { value: "1" },
+    "CurrentBorrower.dependentsAges[0]": { value: "1" },
     Opt_into_Brokerage: {
       type: "button",
       value: "Not_interested",

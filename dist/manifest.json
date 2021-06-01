@@ -22,7 +22,7 @@
     }
   ],
 
-  "permissions": ["tabs"],
+  "permissions": ["tabs", "storage"],
 
   "background": {
     "scripts": ["js/eventPage.js"],
