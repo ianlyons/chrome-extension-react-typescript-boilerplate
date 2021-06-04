@@ -133,8 +133,7 @@ export async function getFillValues(): Promise<FillValues> {
       type: "radio",
       value: "SELF",
     },
-    "CurrentBorrower.dependentCount": { value: "1" },
-    "CurrentBorrower.dependentsAges[0]": { value: "1" },
+    "CurrentBorrower.dependentCount": { value: "0" },
     Opt_into_Brokerage: {
       type: "button",
       value: "Not_interested",
