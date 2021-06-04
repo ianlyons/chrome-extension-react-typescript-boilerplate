@@ -1,10 +1,5 @@
+import * as dataUtils from "../utils/dataUtils";
 import * as utils from "../utils/utils";
-
-async function getRandomEmail() {
-  const randomExtension = Math.random().toString(36).substring(7);
-  const username = utils.getStoredValue("username");
-  return `${username}+${randomExtension}@blend.com`;
-}
 
 interface FillDefinition {
   value: any;
@@ -17,7 +12,8 @@ export async function getFillValuesForInputType(
   inputType: InputType
 ): Promise<FillValues> {
   const res: Record<string, any> = {};
-  utils.mapObject(getFillValues(), (value, key) => {
+  const fillValues = await getFillValues();
+  utils.mapObject(fillValues, (value, key) => {
     if (value.type == inputType) {
       res[key] = value;
     }
@@ -39,7 +35,7 @@ async function defaultFillValues(
 
 export async function getFillValues(): Promise<FillValues> {
   // TODO store this in state in case we need to reference it again
-  const email = getRandomEmail();
+  const email = await dataUtils.getRandomEmail();
 
   return defaultFillValues({
     // Getting Started
@@ -139,6 +135,16 @@ export async function getFillValues(): Promise<FillValues> {
     Opt_into_Brokerage: {
       type: "button",
       value: "Not_interested",
+    },
+
+    // Review and Submit
+    "Application.Borrower.estimatedCreditScore": {
+      type: "textlike",
+      value: "720",
+    },
+    preferredProducts: {
+      type: "multicheckbox",
+      value: "15 Year Fixed Rate",
     },
   });
 }

@@ -1,11 +1,12 @@
 import React, { useState } from "react";
 import { useChromeStorageLocal } from "use-chrome-storage";
 import * as utils from "../utils/utils";
-import * as prefill from "../applicationFlow";
+import * as applicationFlow from "../applicationFlow";
+import * as accountCreation from "../account";
 import "./Sidebar.scss";
 
 async function advancePage() {
-  await prefill.fillTaskAndAdvancePage();
+  await applicationFlow.fillTaskAndAdvancePage();
 }
 
 export default function Sidebar() {
@@ -16,10 +17,6 @@ export default function Sidebar() {
     false
   );
 
-  // heuristic for being on a task-related page in the borrower app
-  const isValidScenario = location.href.indexOf("/section/") > -1;
-  if (!isValidScenario) return null;
-
   return (
     <aside className={utils.classnames("Sidebar", isOpen && "Sidebar-isOpen")}>
       <button
@@ -29,7 +26,7 @@ export default function Sidebar() {
       >
         {isOpen ? "▶" : "◀"}
       </button>
-      <h1>Blend Application Tools</h1>
+      <h1 className="Sidebar-title">Blend Application Tools</h1>
       <div className="Sidebar-inputWrapper">
         <label htmlFor="appToolsUsername">Your Blend username</label>
         <input
@@ -51,6 +48,9 @@ export default function Sidebar() {
       </div>
       <div className="Sidebar-inputWrapper">
         <button onClick={advancePage}>Next page</button>
+      </div>
+      <div className="Sidebar-inputWrapper">
+        <button onClick={accountCreation.createAccount}>Create account</button>
       </div>
     </aside>
   );

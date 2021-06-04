@@ -22,6 +22,10 @@
   transition: transform cubic-bezier(0.6, -0.28, 0.735, 0.045);
 }
 
+.Sidebar-title {
+  font-size: 16px;
+}
+
 .Sidebar-isOpen {
   transform: translateX(-300px);
 }

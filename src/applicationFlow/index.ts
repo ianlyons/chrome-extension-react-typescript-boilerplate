@@ -1,4 +1,5 @@
 import * as prefillUtils from "./taskFillUtils";
+import * as utils from "../utils/utils";
 import * as data from "./data";
 
 export async function fillTask() {
@@ -102,7 +103,7 @@ export async function fillTask() {
   }
 }
 
-function advancePage() {
+async function advancePage() {
   const defaultContinueButton = document.querySelector(
     "#Continue"
   ) as HTMLButtonElement;
@@ -122,7 +123,7 @@ function advancePage() {
     const submitButtons = Array.from(
       submitEnumWrapper.querySelectorAll('button[type="submit"]')
     ) as HTMLElement[];
-    prefillUtils.selectClickInput("button", submitButtons as any[]);
+    await prefillUtils.selectClickInput("button", submitButtons as any[]);
   } else if (interstitialStartButton) {
     interstitialStartButton.click();
   }
@@ -131,5 +132,5 @@ function advancePage() {
 export async function fillTaskAndAdvancePage() {
   await fillTask();
   await prefillUtils.pause(150);
-  advancePage();
+  await advancePage();
 }

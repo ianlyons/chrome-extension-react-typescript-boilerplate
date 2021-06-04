@@ -1,3 +1,5 @@
+import { useChromeStorageLocal } from "use-chrome-storage";
+
 export function compact(list: any[]) {
   return Array.from(list).filter((arg) => !!arg);
 }
@@ -30,4 +32,10 @@ export async function getStoredValue(key: string): Promise<any> {
       resolve(value);
     });
   });
+}
+
+export function debugLog(message: string, metadata?: any) {
+  const [isDebugMode] = useChromeStorageLocal("isDebugMode");
+  if (!isDebugMode) return;
+  console.info(`[Blend Extension] ${message}`, metadata);
 }
