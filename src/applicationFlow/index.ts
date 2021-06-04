@@ -1,12 +1,18 @@
 import * as prefillUtils from "./taskFillUtils";
 import * as utils from "../utils/utils";
+import * as inputUtils from "../utils/inputUtils";
 import * as data from "./data";
 
-export async function fillTask() {
+interface FillTaskOpts {
+  isDebugMode: boolean;
+}
+
+export async function fillTask(opts: FillTaskOpts) {
+  const debugLogger = utils.getDebugLogger(opts.isDebugMode);
   const prefillValues = await data.getFillValues();
   const taskForm = document.querySelector("#taskForm");
   if (!taskForm) {
-    console.info("Not on task page, skipping task fill");
+    debugLogger("Not on task page, skipping task fill");
     return;
   }
 
@@ -21,12 +27,12 @@ export async function fillTask() {
     );
     const fillValueDefinition = prefillValues[propertyName];
     if (!fillValueDefinition) {
-      console.info(`No prefillable value found for ${propertyName}`);
+      debugLogger(`No prefillable value found for ${propertyName}`);
       continue;
     }
 
     const valueToFill = fillValueDefinition.value;
-    console.info(`Filling ${valueToFill} into ${propertyName}`);
+    debugLogger(`Filling ${valueToFill} into ${propertyName}`);
 
     if (fillValueDefinition.type === "checkbox") {
       input.click();
@@ -50,46 +56,46 @@ export async function fillTask() {
       ) as HTMLInputElement[];
       prefillUtils.selectClickInput("multicheckbox", multicheckboxInputs);
     } else if (fillValueDefinition.type === "address") {
-      // // fill and open the modal
-      // // input.click();
-      // const changeEvent = prefillUtils.createEventWithValueAndTarget(
-      //   "change",
-      //   valueToFill,
-      //   input
-      // );
-      // input.dispatchEvent(changeEvent);
-      // await prefillUtils.pause(3000);
-      // const focusEvent = prefillUtils.createEventWithValueAndTarget(
-      //   "focus",
-      //   valueToFill,
-      //   input
-      // );
-      // input.dispatchEvent(focusEvent);
+      // fill and open the modal
+      // input.click();
+      const changeEvent = inputUtils.createEventWithValueAndTarget(
+        "change",
+        valueToFill,
+        input
+      );
+      input.dispatchEvent(changeEvent);
+      await prefillUtils.pause(3000);
+      const focusEvent = inputUtils.createEventWithValueAndTarget(
+        "focus",
+        valueToFill,
+        input
+      );
+      input.dispatchEvent(focusEvent);
 
-      // console.log("1", performance.now());
+      console.log("1", performance.now());
 
-      // await prefillUtils.pause();
-      // input.dispatchEvent(changeEvent);
+      await prefillUtils.pause();
+      input.dispatchEvent(changeEvent);
 
-      // console.log("2", performance.now());
-      // await prefillUtils.pause();
-      // try {
-      //   document
-      //     .querySelector(`${input.id}-dropdown-0`)
-      //     .querySelector("button")
-      //     .click();
-      //   console.log("3", performance.now());
-      //   await prefillUtils.pause();
-      //   // submit the contents of the modal
-      //   const modalSubmitButton = document.querySelector(
-      //     '[data-it="it-AddressModal-content"] button[type="submit"]'
-      //   ) as HTMLButtonElement;
+      console.log("2", performance.now());
+      await prefillUtils.pause();
+      try {
+        document
+          .querySelector(`${input.id}-dropdown-0`)
+          .querySelector("button")
+          .click();
+        console.log("3", performance.now());
+        await prefillUtils.pause();
+        // submit the contents of the modal
+        const modalSubmitButton = document.querySelector(
+          '[data-it="it-AddressModal-content"] button[type="submit"]'
+        ) as HTMLButtonElement;
 
-      //   modalSubmitButton.click();
-      //   console.log("4", performance.now());
-      // } catch (err) {
-      //   console.error(err);
-      // }
+        modalSubmitButton.click();
+        console.log("4", performance.now());
+      } catch (err) {
+        console.error(err);
+      }
 
       continue;
       // await prefillUtils.pause();
@@ -129,8 +135,12 @@ async function advancePage() {
   }
 }
 
-export async function fillTaskAndAdvancePage() {
-  await fillTask();
+interface FillTaskAndAdvancePageOpts {
+  isDebugMode: boolean;
+}
+
+export async function fillTaskAndAdvancePage(opts: FillTaskAndAdvancePageOpts) {
+  await fillTask({ isDebugMode: opts.isDebugMode });
   await prefillUtils.pause(150);
   await advancePage();
 }

@@ -39,12 +39,12 @@ export async function getFillValues(): Promise<FillValues> {
 
   return defaultFillValues({
     // Getting Started
-    "Borrower.firstName": { value: "Ian" },
-    "Borrower.lastName": { value: "Lyons" },
-    "Borrower.homePhone": { value: "8023550813" },
-    phoneNumber: { value: "8023770614" },
-    phoneType: { value: "MOBILE" },
-    "Borrower.maritalStatus": { value: "MARRIED" },
+    // "Borrower.firstName": { value: "Ian" },
+    // "Borrower.lastName": { value: "Lyons" },
+    // "Borrower.homePhone": { value: "8023550813" },
+    // phoneNumber: { value: "8023770614" },
+    // phoneType: { value: "MOBILE" },
+    // "Borrower.maritalStatus": { value: "MARRIED" },
     "Borrower.currentAddress": { type: "address", value: "456 Washington St" },
     Accept_Terms_of_Service_and_EConsent: { type: "checkbox", value: true },
     "Email input": { value: email },

@@ -5,10 +5,6 @@ import * as applicationFlow from "../applicationFlow";
 import * as accountCreation from "../account";
 import "./Sidebar.scss";
 
-async function advancePage() {
-  await applicationFlow.fillTaskAndAdvancePage();
-}
-
 export default function Sidebar() {
   const [isOpen, setIsOpen] = useState(false);
   const [username, setUsername] = useChromeStorageLocal("username", "");
@@ -16,6 +12,10 @@ export default function Sidebar() {
     "isDebugMode",
     false
   );
+
+  async function advancePage() {
+    await applicationFlow.fillTaskAndAdvancePage({ isDebugMode });
+  }
 
   return (
     <aside className={utils.classnames("Sidebar", isOpen && "Sidebar-isOpen")}>
