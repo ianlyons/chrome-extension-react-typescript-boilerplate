@@ -1,6 +1,5 @@
-import * as prefillUtils from "./taskFillUtils";
+import * as taskFillUtils from "./taskFillUtils";
 import * as utils from "../utils/utils";
-import * as inputUtils from "../utils/inputUtils";
 import * as data from "./data";
 
 interface FillTaskOpts {
@@ -11,6 +10,7 @@ export async function fillTask(opts: FillTaskOpts) {
   const debugLogger = utils.getDebugLogger(opts.isDebugMode);
   const prefillValues = await data.getFillValues();
   const taskForm = document.querySelector("#taskForm");
+
   if (!taskForm) {
     debugLogger("Not on task page, skipping task fill");
     return;
@@ -20,15 +20,36 @@ export async function fillTask(opts: FillTaskOpts) {
     taskForm.querySelectorAll("input,select,textarea")
   );
 
+  const alreadyCompletedInputs = new Set();
+
   for (let i = 0; i < nonButtonInputs.length; i++) {
-    const input = nonButtonInputs[i] as any;
-    const propertyName = prefillUtils.decodePropertyName(
+    let input = nonButtonInputs[i] as any;
+
+    const propertyName = taskFillUtils.decodePropertyName(
       input?.name || input.id
     );
+    console.log(`input is:`, input);
     const fillValueDefinition = prefillValues[propertyName];
     if (!fillValueDefinition) {
       debugLogger(`No prefillable value found for ${propertyName}`);
       continue;
+    }
+
+    // this stops us from re-filling (or re-checking/unchecking) situations where a single
+    // control (e.g. a multicheckbox) is comprised of multiple input elements
+    if (alreadyCompletedInputs.has(input.name)) {
+      debugLogger(
+        `Returning early for already-completed input id ${input.name}`
+      );
+      continue;
+    } else {
+      alreadyCompletedInputs.add(input.name);
+    }
+
+    // sometimes through rerenders, an input can be removed from the DOM. the result of this
+    // is that our reference is stale; refresh it here.
+    if (!input.isConnected) {
+      input = document.getElementById(input.id);
     }
 
     const valueToFill = fillValueDefinition.value;
@@ -39,70 +60,23 @@ export async function fillTask(opts: FillTaskOpts) {
       continue;
     } else if (fillValueDefinition.type === "radio") {
       const radioInput = input as HTMLInputElement;
-      // TODO this will currently run multiple times per input because radios are structured as
-      // n different `input type="radio"` elements with corresponding `name` attributes underneath
-      // a shared `fieldset`. it's okay for now, because it will keep selecting the same value.
       const radioInputs = Array.from(
         document.querySelectorAll(`input[name="${radioInput.name}"]`)
       ) as HTMLInputElement[];
-      prefillUtils.selectClickInput("radio", radioInputs);
+      taskFillUtils.selectClickInput("radio", radioInputs);
     } else if (fillValueDefinition.type === "multicheckbox") {
       const multicheckboxInput = input as HTMLInputElement;
-      // TODO this will currently run multiple times per input because radios are structured as
-      // n different `input type="radio"` elements with corresponding `name` attributes underneath
-      // a shared `fieldset`. it's okay for now, because it will keep selecting the same value.
       const multicheckboxInputs = Array.from(
         document.querySelectorAll(`input[name="${multicheckboxInput.name}"]`)
       ) as HTMLInputElement[];
-      prefillUtils.selectClickInput("multicheckbox", multicheckboxInputs);
+      taskFillUtils.selectClickInput("multicheckbox", multicheckboxInputs);
     } else if (fillValueDefinition.type === "address") {
-      // fill and open the modal
-      // input.click();
-      const changeEvent = inputUtils.createEventWithValueAndTarget(
-        "change",
-        valueToFill,
-        input
-      );
-      input.dispatchEvent(changeEvent);
-      await prefillUtils.pause(3000);
-      const focusEvent = inputUtils.createEventWithValueAndTarget(
-        "focus",
-        valueToFill,
-        input
-      );
-      input.dispatchEvent(focusEvent);
-
-      console.log("1", performance.now());
-
-      await prefillUtils.pause();
-      input.dispatchEvent(changeEvent);
-
-      console.log("2", performance.now());
-      await prefillUtils.pause();
-      try {
-        document
-          .querySelector(`${input.id}-dropdown-0`)
-          .querySelector("button")
-          .click();
-        console.log("3", performance.now());
-        await prefillUtils.pause();
-        // submit the contents of the modal
-        const modalSubmitButton = document.querySelector(
-          '[data-it="it-AddressModal-content"] button[type="submit"]'
-        ) as HTMLButtonElement;
-
-        modalSubmitButton.click();
-        console.log("4", performance.now());
-      } catch (err) {
-        console.error(err);
-      }
-
-      continue;
-      // await prefillUtils.pause();
+      await taskFillUtils.fillAddressInput(input, valueToFill);
     } else if (fillValueDefinition.type === "textlike") {
       // some inputs trigger changes off of blur as well, so we fire a change then a blur with the
       // same values in succession
-      prefillUtils.fillTextlikeInput(input, valueToFill);
+      console.log(`input is:`, input);
+      await taskFillUtils.fillTextlikeInput(input, valueToFill);
     } else {
       throw new Error(`Unhandled input type: ${fillValueDefinition.type}`);
     }
@@ -129,7 +103,7 @@ async function advancePage() {
     const submitButtons = Array.from(
       submitEnumWrapper.querySelectorAll('button[type="submit"]')
     ) as HTMLElement[];
-    await prefillUtils.selectClickInput("button", submitButtons as any[]);
+    await taskFillUtils.selectClickInput("button", submitButtons as any[]);
   } else if (interstitialStartButton) {
     interstitialStartButton.click();
   }
@@ -141,6 +115,7 @@ interface FillTaskAndAdvancePageOpts {
 
 export async function fillTaskAndAdvancePage(opts: FillTaskAndAdvancePageOpts) {
   await fillTask({ isDebugMode: opts.isDebugMode });
-  await prefillUtils.pause(150);
+  await utils.pause(200);
+  console.log("advancing page");
   await advancePage();
 }

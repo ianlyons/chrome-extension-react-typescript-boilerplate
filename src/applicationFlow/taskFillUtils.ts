@@ -1,5 +1,6 @@
 import * as data from "./data";
 import * as inputUtils from "../utils/inputUtils";
+import * as utils from "../utils/utils";
 
 export function decodePropertyName(encodedPropertyName: string) {
   return encodedPropertyName
@@ -11,6 +12,46 @@ export function encodePropertyName(text: string) {
   return text
     .replace(/\./g, "\u2219")
     .replace(/\[([0-9]?[0-9])\]/g, "\u228f$1\u2290");
+}
+
+export async function fillAddressInput(input: HTMLInputElement, value: string) {
+  // fill and open the modal
+  const focusEvent = inputUtils.createEventWithValueAndTarget(
+    "focus",
+    "",
+    input
+  );
+  input.dispatchEvent(focusEvent);
+  const changeEvent = inputUtils.createEventWithValueAndTarget(
+    "change",
+    value,
+    input
+  );
+  input.dispatchEvent(changeEvent);
+  await utils.pause(300);
+
+  const button = document.querySelector(
+    `#${input.id}-dropdown-0 button`
+  ) as HTMLButtonElement;
+  const mouseUpEvent = inputUtils.createEventWithValueAndTarget(
+    "mousedown",
+    null,
+    button
+  );
+  button.dispatchEvent(mouseUpEvent);
+
+  // wait for the modal to animate in
+  await utils.pause(500);
+  // submit the contents of the modal
+  const modalSubmitButton = document.querySelector(
+    '[data-it="it-AddressModal-content"] button[type="submit"]'
+  ) as HTMLButtonElement;
+
+  modalSubmitButton.click();
+
+  const blurEvent = inputUtils.createEventWithValueAndTarget("blur", "", input);
+  input.dispatchEvent(blurEvent);
+  await utils.pause(10);
 }
 
 export async function selectClickInput(
@@ -37,10 +78,14 @@ export async function selectClickInput(
   }
 }
 
-export const fillTextlikeInput = inputUtils.fillTextlikeInput;
+export function getInputElementsInTaskForm(taskForm: Element) {
+  const nonButtonInputs = Array.from(
+    taskForm.querySelectorAll("input,select,textarea")
+  );
 
-export async function pause(durationMs = 1000) {
-  return new Promise((resolve) => {
-    setTimeout(resolve, durationMs);
-  });
+  // for some inputs (e.g. multicheckboxes)
+
+  return nonButtonInputs;
 }
+
+export const fillTextlikeInput = inputUtils.fillTextlikeInput;

@@ -1,9 +1,11 @@
+import * as utils from "./utils";
+
 export function createEventWithValueAndTarget(
   type: string,
   value: any,
   target: any
 ) {
-  var event = new Event(type);
+  var event = new Event(type, { bubbles: true });
   Object.defineProperty(event, "target", { value: target });
   Object.defineProperty(event, "currentTarget", { value: target });
   (event.target as any).value = value;
@@ -11,7 +13,7 @@ export function createEventWithValueAndTarget(
   return event;
 }
 
-export function fillTextlikeInput(
+export async function fillTextlikeInput(
   input: HTMLInputElement,
   valueToFill: string | number
 ) {
@@ -24,5 +26,6 @@ export function fillTextlikeInput(
   const blurEvent = createEventWithValueAndTarget("blur", valueToFill, input);
   // input.dispatchEvent(focusEvent);
   input.dispatchEvent(changeEvent);
+  await utils.pause();
   input.dispatchEvent(blurEvent);
 }

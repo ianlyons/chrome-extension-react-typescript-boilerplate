@@ -6,9 +6,9 @@ export async function createAccount() {
   const emailInput = document.getElementById("email") as HTMLInputElement;
   const emailInput2 = document.getElementById("email2") as HTMLInputElement;
   const passwordInput = document.getElementById("password") as HTMLInputElement;
-  inputUtils.fillTextlikeInput(emailInput, email);
-  inputUtils.fillTextlikeInput(emailInput2, email);
-  inputUtils.fillTextlikeInput(passwordInput, "Password123!");
+  await inputUtils.fillTextlikeInput(emailInput, email);
+  await inputUtils.fillTextlikeInput(emailInput2, email);
+  await inputUtils.fillTextlikeInput(passwordInput, "Password123!");
   const submitButton = document.querySelector(
     'button[type="submit"]'
   ) as HTMLButtonElement;

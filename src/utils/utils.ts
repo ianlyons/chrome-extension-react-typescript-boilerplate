@@ -32,8 +32,14 @@ export async function getStoredValue(key: string): Promise<any> {
   });
 }
 
-function debugLog(message: string, metadata?: any) {
-  console.info(`[Blend Extension] ${message}`, metadata);
+export async function pause(durationMs = 50) {
+  return new Promise((resolve) => {
+    setTimeout(resolve, durationMs);
+  });
+}
+
+function debugLog(...args: any[]) {
+  console.info(`[Blend Extension]`, ...args);
 }
 
 export function getDebugLogger(isDebugMode: boolean) {

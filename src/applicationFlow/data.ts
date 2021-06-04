@@ -39,12 +39,12 @@ export async function getFillValues(): Promise<FillValues> {
 
   return defaultFillValues({
     // Getting Started
-    // "Borrower.firstName": { value: "Ian" },
-    // "Borrower.lastName": { value: "Lyons" },
-    // "Borrower.homePhone": { value: "8023550813" },
-    // phoneNumber: { value: "8023770614" },
-    // phoneType: { value: "MOBILE" },
-    // "Borrower.maritalStatus": { value: "MARRIED" },
+    "Borrower.firstName": { value: "Ian" },
+    "Borrower.lastName": { value: "Lyons" },
+    "Borrower.homePhone": { value: "8023550813" },
+    phoneNumber: { value: "8023770614" },
+    phoneType: { value: "MOBILE" },
+    "Borrower.maritalStatus": { value: "MARRIED" },
     "Borrower.currentAddress": { type: "address", value: "456 Washington St" },
     Accept_Terms_of_Service_and_EConsent: { type: "checkbox", value: true },
     "Email input": { value: email },
@@ -94,24 +94,27 @@ export async function getFillValues(): Promise<FillValues> {
 
     // REO
     "CurrentREO.type": { value: "SINGLE_FAMILY" },
+    "CurrentREO.address": { type: "address", value: "15 E. 76th St" },
     "CurrentREO.presentMarketValue": { value: "1000000" },
     "CurrentREO.usageType": { value: "PRIMARY_RESIDENCE" },
     "CurrentREO.dispositionType": {
       value: "RETAIN_FOR_PRIMARY_OR_SECONDARY_RESIDENCE",
     },
-    "CurrentREO.mortgageCount": { value: 0 },
+    "CurrentREO.mortgageCount": { value: "0" },
+    addREO: {
+      type: "button",
+      value: "No,_done_adding_property",
+    },
 
     // Demographics
     "CurrentBorrower.HMDASexType": {
       type: "multicheckbox",
       value: "NOT_PROVIDED",
     },
-    // Demographics
     "CurrentBorrower.HMDAEthnicityType": {
       type: "multicheckbox",
       value: "NOT_PROVIDED",
     },
-    // Demographics
     "CurrentBorrower.HMDARaceType": {
       type: "multicheckbox",
       value: "NOT_PROVIDED",

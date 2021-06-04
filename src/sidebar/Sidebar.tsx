@@ -6,7 +6,7 @@ import * as accountCreation from "../account";
 import "./Sidebar.scss";
 
 export default function Sidebar() {
-  const [isOpen, setIsOpen] = useState(false);
+  const [isOpen, setIsOpen] = useState(true);
   const [username, setUsername] = useChromeStorageLocal("username", "");
   const [isDebugMode, setIsDebugMode] = useChromeStorageLocal(
     "isDebugMode",
