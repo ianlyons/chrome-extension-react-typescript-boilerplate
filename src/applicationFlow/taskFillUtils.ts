@@ -78,14 +78,4 @@ export async function selectClickInput(
   }
 }
 
-export function getInputElementsInTaskForm(taskForm: Element) {
-  const nonButtonInputs = Array.from(
-    taskForm.querySelectorAll("input,select,textarea")
-  );
-
-  // for some inputs (e.g. multicheckboxes)
-
-  return nonButtonInputs;
-}
-
 export const fillTextlikeInput = inputUtils.fillTextlikeInput;
