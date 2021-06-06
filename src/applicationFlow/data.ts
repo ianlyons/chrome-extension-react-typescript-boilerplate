@@ -89,7 +89,7 @@ export async function getFillValues(): Promise<FillValues> {
       value: "YEARLY",
     },
     "Income.incomes_employerId_currentEmployerId_type_BASE.yearlyIncome": {
-      value: 100000,
+      value: "100000",
     },
 
     // REO
@@ -147,6 +147,12 @@ export async function getFillValues(): Promise<FillValues> {
     preferredProducts: {
       type: "multicheckbox",
       value: "15 Year Fixed Rate",
+    },
+    "Borrower.estimatedCreditScore": {
+      value: "759",
+    },
+    loanResultPreference: {
+      value: "minimizeMonthlyPayment",
     },
   });
 }
