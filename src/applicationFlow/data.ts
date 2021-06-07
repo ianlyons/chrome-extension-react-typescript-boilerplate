@@ -70,11 +70,17 @@ export async function getFillValues(): Promise<FillValues> {
     // Getting to Know You
     "Application.propertyInfo.propertyType": { value: "SINGLE_FAMILY" },
     "Application.propertyUsageTypePurchase": { value: "PRIMARY_RESIDENCE" },
+    "Application.propertyUsageTypePurchaseNewURLA": {
+      value: "PRIMARY_RESIDENCE",
+    },
+    County_Name: {
+      value: "New York",
+      type: "typeahead",
+    },
     "Application.appraisalValue": { value: "1000000" },
     "Application.purchasePrice": { value: "1000000" },
     "Application.totalDownPayment": { value: "200000" },
     "Application.loanAmount": { value: "800000" },
-    County_Name: { value: "New York Country" },
     "Borrower.SSN": { value: "001010001" },
     "Borrower.birthDate": { value: "05/01/1990" },
 

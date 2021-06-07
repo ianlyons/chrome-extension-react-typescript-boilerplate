@@ -54,6 +54,30 @@ export async function fillAddressInput(input: HTMLInputElement, value: string) {
   await utils.pause(10);
 }
 
+export async function fillTypeaheadInput(
+  input: HTMLInputElement,
+  value: string
+) {
+  // open the typeahead list
+  const focusEvent = inputUtils.createEventWithValueAndTarget(
+    "focus",
+    "",
+    input
+  );
+  input.dispatchEvent(focusEvent);
+  const changeEvent = inputUtils.createEventWithValueAndTarget(
+    "change",
+    value,
+    input
+  );
+  input.dispatchEvent(changeEvent);
+  await utils.pause(300);
+
+  // now that the typeahead list is open and options are populated, select the first
+  // item in the list.
+  (input.parentElement.querySelector(`[role="option"]`) as any).click();
+}
+
 export async function selectClickInput(
   inputType: InputType,
   inputs: HTMLButtonElement[] | HTMLInputElement[]

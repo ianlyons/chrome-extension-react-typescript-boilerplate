@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import { useChromeStorageLocal } from "use-chrome-storage";
+import BlendLogo from "./BlendLogo";
 import * as utils from "../utils/utils";
 import * as applicationFlow from "../applicationFlow";
 import * as accountCreation from "../account";
@@ -26,7 +27,7 @@ export default function Sidebar() {
       >
         {isOpen ? "▶" : "◀"}
       </button>
-      <h1 className="Sidebar-title">Blend Application Tools</h1>
+      <BlendLogo style={{ height: 30, width: "auto", marginBottom: 12 }} />
       <div className="Sidebar-inputWrapper">
         <label htmlFor="appToolsUsername">Your Blend username</label>
         <input

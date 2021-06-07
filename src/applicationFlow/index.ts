@@ -75,8 +75,9 @@ export async function fillTask(opts: FillTaskOpts) {
     } else if (fillValueDefinition.type === "textlike") {
       // some inputs trigger changes off of blur as well, so we fire a change then a blur with the
       // same values in succession
-      console.log(`input is:`, input);
       await taskFillUtils.fillTextlikeInput(input, valueToFill);
+    } else if (fillValueDefinition.type === "typeahead") {
+      await taskFillUtils.fillTypeaheadInput(input, valueToFill);
     } else {
       throw new Error(`Unhandled input type: ${fillValueDefinition.type}`);
     }

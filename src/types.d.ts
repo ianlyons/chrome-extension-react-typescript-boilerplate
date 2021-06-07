@@ -4,4 +4,5 @@ type InputType =
   | "button"
   | "address"
   | "checkbox"
+  | "typeahead"
   | "multicheckbox";
